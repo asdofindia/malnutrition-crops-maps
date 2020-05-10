@@ -1,0 +1,51 @@
+.legend {
+    display: none;
+    background-color: #fff;
+    border-radius: 3px;
+    bottom: 150px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    font: 1.5rem/2.5rem 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    padding: 10px;
+    position: absolute;
+    right: 400px;
+    z-index: 1;
+}
+
+.legend h4 {
+    margin: 0 0 10px;
+}
+
+.legend div span {
+    border-radius: 50%;
+    display: inline-block;
+    height: 1.5rem;
+    margin-right: 5px;
+    width: 1.5rem;
+}
+
+
+.patternLegend {
+    display: none;
+    background-color: #fff;
+    border-radius: 3px;
+    top: 150px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    font: 1.5rem/2.5rem 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    padding: 10px;
+    position: absolute;
+    right: 400px;
+    z-index: 1;
+}
+
+.patternLegend h4 {
+    margin: 0 0 10px;
+}
+
+.patternLegend div span {
+    display: inline-block;
+    height: 1.5rem;
+    margin-right: 5px;
+    width: 1.5rem;
+}
+
+

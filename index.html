@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Malnutrition Analysis</title>
+        <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+        <script src="https://api.mapbox.com/mapbox-gl-js/v1.10.0/mapbox-gl.js"></script>
+        <script src="./papaparse.min.js"></script>
+        <link href="https://api.mapbox.com/mapbox-gl-js/v1.10.0/mapbox-gl.css" rel="stylesheet" />
+        <style>
+body { margin: 0; padding: 0; }
+#map { position: absolute; top: 0; bottom: 0; width: 100%; }
+        </style>
+        <link href="./styles.css" rel="stylesheet" />
+    </head>
+    <body>
+        <div id="map"></div>
+        <div id="millets_of_ill" class="legend">
+            <h4>Millets (Jowar, Bajra, and others)</h4>
+        </div>
+        <div id="per_capita_bajra" class="legend">
+            <h4>Bajra</h4>
+        </div>
+        <div id="per_capita_jowar" class="legend">
+            <h4>Jowar</h4>
+        </div>
+        <div id="per_capita_other_cereal_millet" class="legend">
+            <h4>Other Millet</h4>
+        </div>
+        <div id="per_capita_maize" class="legend">
+            <h4>Maize</h4>
+        </div>
+        <div id="per_capita_total_cereals_millets" class="legend">
+            <h4>Total Cereals Millets</h4>
+        </div>
+        <div id="per_capita_rice" class="legend">
+            <h4>Rice</h4>
+        </div>
+        <div id="per_capita_wheat" class="legend">
+            <h4>Wheat</h4>
+        </div>
+        <div id="per_capita_ragi" class="legend">
+            <h4>Ragi</h4>
+        </div>
+        <div id="bmi_1849_lessthan185" class="legend">
+            <h4>BMI (15-49) less than 18.5</h4>
+        </div>
+        
+        <div id="stunted_5" class="patternLegend">
+            <h4>Patterns</h4>
+            <div><span style="background: url('./assets/horizontal.png')"></span>Stunted &gt; 45</div>
+            <div><span style="background: url('./assets/vertical.png')"></span>Wasted &gt; 27</div>
+            <div><span style="background: url('./assets/angled.png')"></span>Stunted &gt; 45 &amp; Wasted &gt; 27</div>
+        </div>
+
+        <div id="bmi_less" class="patternLegend">
+            <h4>Patterns</h4>
+            <div><span style="background: url('./assets/horizontal.png')"></span>Women (15-49) with BMI less than 18.5 &gt;= 30%</div>
+            <div><span style="background: url('./assets/vertical.png')"></span>Women with short stature &gt;= 15%</div>
+            <div><span style="background: url('./assets/angled.png')"></span>Women (15-49) with BMI less than 18.5 &gt;= 30% &amp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp; Women with short stature &gt;= 15%</div>
+        </div>
+        <script src="./main.js" type="module">
+        </script>
+
+    </body>
+</html>
