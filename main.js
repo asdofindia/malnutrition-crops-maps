@@ -1,10 +1,6 @@
 import { getRelevantDistrictData } from './districts.js'
 import { interpolate, patternFill } from './styles.js'
 
-// Get a mapbox access token for maps and put it here.
-// See https://docs.mapbox.com/help/how-mapbox-works/access-tokens/
-mapboxgl.accessToken = "pk.xxxx";
-
 // Choose the gradient (base layer) by uncommenting the correct line
 
 const gradientVariable = 'per_capita_maize';
@@ -154,7 +150,7 @@ const mapStuff = (geojsonData) => {
     const zoom = 5.4
     var map = new mapboxgl.Map({
         container: 'map',
-        style: 'mapbox://styles/mapbox/empty-v8',
+        style: './mapStyle.json',
         center: [83, 23],
         zoom
     });

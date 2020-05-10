@@ -23,11 +23,10 @@ Geographic Information on districts of India is present as a geojson file in dis
 ## How to use
 
 * Download this code
-* [Get a mapbox API access token](https://docs.mapbox.com/help/how-mapbox-works/access-tokens/) and put it in `main.js` in the line `mapboxgl.accessToken = "pk.xxxx";` by replacing `pk.xxxx`
 * Serve the folder over a webserver (Eg: install http-server with `npm install -g http-server` and run `http-server`). See [here](https://gist.github.com/willurd/5720255) for single line servers in many languages.
 * Open the server address in your browser. Maps have been generated at the resolution 2000 x 2000 which can be reached on any screen by going into [responsive design mode](https://developer.mozilla.org/en-US/docs/Tools/Responsive_Design_Mode).
 * Use [Screenshot](https://developer.mozilla.org/en-US/docs/Tools/Taking_screenshots) within the browser for capturing high quality image.
-* Choose the variables to plot as gradients and patterns by uncommenting the respective lines in `main.js` (see lines 8 - 30)
+* Choose the variables to plot as gradients and patterns by uncommenting the respective lines in `main.js` (see lines 4 - 26)
 
 ### What does this software do
 
