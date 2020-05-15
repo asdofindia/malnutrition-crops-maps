@@ -34,3 +34,8 @@ Geographic Information on districts of India is present as a geojson file in dis
 * Merges the tabular data into map data by using a combination of manual match (first preference), exact match, and then closest match. (See `districts.js`)
 * Plots the gradient variable as a base layer with a linear interpolator as defined in `styles.js`
 * Adds the pattern variable as patterns based on the thresholds passed in.
+
+
+# License
+
+The software is released in MIT license. See `LICENSE` for details.
