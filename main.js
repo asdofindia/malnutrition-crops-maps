@@ -1,9 +1,11 @@
 import { getRelevantDistrictData } from './districts.js'
-import { interpolate, patternFill } from './styles.js'
+import { interpolate, patternFill, indiaMapInterpolator } from './styles.js'
 
 // Choose the gradient (base layer) by uncommenting the correct line
 
-const gradientVariable = 'per_capita_maize';
+const fallbackGradient = 'per_capita_maize';
+
+// const gradientVariable = 'per_capita_maize';
 // const gradientVariable = 'per_capita_total_cereals_millets';
 // const gradientVariable = 'per_capita_ragi';
 // const gradientVariable = 'bmi_1849_lessthan185';
@@ -17,13 +19,13 @@ const gradientVariable = 'per_capita_maize';
 
 // Choose the patterns to overlay by uncommenting the corresponding lines in patternVariables and patternThresholds
 
-// const patternVariables = ['stunted_5', 'Wasted_5']
-// const patternThresholds = [45, 27]
-// const patternComparators = ['>', '<=']
+const patternVariables = ['stunted_5', 'Wasted_5']
+const patternThresholds = [45, 27]
+const patternComparators = ['>', '<=']
 
-const patternVariables = ['bmi_less', 'sort_ght']
-const patternThresholds = [30, 15]
-const patternComparators = ['>=', '<']
+// const patternVariables = ['bmi_less', 'sort_ght']
+// const patternThresholds = [30, 15]
+// const patternComparators = ['>=', '<']
 
 mapboxgl.Map.prototype.loadImageAsync = function(url) {
     const mapContext = this;
@@ -109,6 +111,10 @@ const enhanceData = (geojsonData, csvData) => {
                 const stringValue = districtData[0][gradientVariable]
                 const floatValue = parseFloat(stringValue)
                 feature.properties[gradientVariable] = floatValue
+            } else {
+                const stringValue = districtData[0][fallbackGradient]
+                const floatValue = parseFloat(stringValue)
+                feature.properties[fallbackGradient] = floatValue
             }
 
             for (const patternVariable of patternVariables) {
@@ -168,7 +174,7 @@ const mapLoader = async (map, geojsonData) => {
         data: geojsonData
     });
     
-    const interpolator = gradientExists ? interpolate(gradientVariable) : 'yellow'
+    const interpolator = gradientExists ? interpolate(gradientVariable) : indiaMapInterpolator(fallbackGradient)
 
     if (gradientExists) createLegend(interpolator);
     

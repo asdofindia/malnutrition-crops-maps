@@ -24,6 +24,12 @@ const interpolator = (name) =>  [
 
 const interpolate = (variable) => interpolator(variable)
 
+const indiaMapInterpolator = (variable) => [
+    'case',
+    [">=", ["get", variable], 0], 'yellow',
+    'black'
+]
+
 const patternFill = (var1, var2, var1t, var2t, greater, lesser) => [
     'case',
 
@@ -54,5 +60,6 @@ const patternFill = (var1, var2, var1t, var2t, greater, lesser) => [
 
 export {
     interpolate,
-    patternFill
+    patternFill,
+    indiaMapInterpolator
 }
