@@ -1,25 +1,35 @@
+const yellowPalette = ['#F2F12D','#EED322','#E6B71E','#DA9C20','#CA8323','#B86B25','#A25626','#8B4225','#723122']
+
+const bluePalette1 = ['#b3cde0', '#d4add0', '#6497b1', '#7487a5', '#8477a1', '#9467a1', '#005b96', '#03396c', '#011f4b']
+
+const greyScale = ['#eee', '#ddd', '#ccc', "#bbb", '#aaa', '#999', '#888', '#777', '#666']
+
+const blueRedPalette = ['#5084DD', '#3064C6' , '#2147B6', '#1034A6', '#412F88', '#722B6A', '#A2264B', '#D3212D', '#F62D2D']
+
+const palette = greyScale
+
 const interpolator = (name) =>  [
     'interpolate',
     ['linear'],
     ['get', name],
     0,
-    '#F2F12D',
+    palette[0],
     10,
-    '#EED322',
+    palette[1],
     100,
-    '#E6B71E',
+    palette[2],
     1000,
-    '#DA9C20',
+    palette[3],
     5000,
-    '#CA8323',
+    palette[4],
     10000,
-    '#B86B25',
+    palette[5],
     50000,
-    '#A25626',
+    palette[6],
     100000,
-    '#8B4225',
+    palette[7],
     500000,
-    '#723122'
+    palette[8],
 ]
 
 const interpolate = (variable) => interpolator(variable)
