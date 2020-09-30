@@ -1,5 +1,5 @@
 import { getRelevantDistrictData } from './districts.js'
-import { interpolate, patternFill, indiaMapInterpolator } from './styles.js'
+import { interpolate, patternFill } from './styles.js'
 
 // Choose the gradient (base layer) by uncommenting the correct line
 
@@ -145,7 +145,7 @@ const createLegend = (interpolator) => {
     }
     const blackLevel = document.createElement('div');
     const blackSpan = document.createElement('span');
-    blackSpan.setAttribute('style', 'background-color: black')
+    blackSpan.setAttribute('style', `background-color: #ccc`)
     blackLevel.appendChild(blackSpan);
     const blackText = document.createTextNode("No data");
     blackLevel.appendChild(blackText);
@@ -174,16 +174,29 @@ const mapLoader = async (map, geojsonData) => {
         data: geojsonData
     });
     
-    const interpolator = gradientExists ? interpolate(gradientVariable) : indiaMapInterpolator(fallbackGradient)
+    const interpolator = gradientExists ?
+        [
+            'case',
+            ['==', ['get', gradientVariable], null],
+            '#ccc',
+            interpolate(gradientVariable)
+        ] :
+        [
+            'case',
+            ["==", ["get", fallbackGradient], null], '#ccc',
+            [">=", ["get", fallbackGradient], 0], '#eeab54',
+            '#ccc'
+        ]
 
-    if (gradientExists) createLegend(interpolator);
+    if (gradientExists) createLegend(interpolate(gradientVariable));
     
     map.addLayer({
         id: 'districts',
         type: 'fill',
         source: 'districts',
         paint: {
-            'fill-color': interpolator
+            'fill-color': interpolator,
+            'fill-outline-color': '#333'
         }
     });
 
@@ -218,7 +231,8 @@ const mapLoader = async (map, geojsonData) => {
                 patternThresholds[1],
                 patternComparators[0],
                 patternComparators[1]
-            )
+            ),
+            'fill-opacity': 0.7
         }
     });
 }

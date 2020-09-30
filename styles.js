@@ -6,7 +6,9 @@ const greyScale = ['#eee', '#ddd', '#ccc', "#bbb", '#aaa', '#999', '#888', '#777
 
 const blueRedPalette = ['#5084DD', '#3064C6' , '#2147B6', '#1034A6', '#412F88', '#722B6A', '#A2264B', '#D3212D', '#F62D2D']
 
-const palette = greyScale
+const whitebrownorange = ['#fdfdfd', '#fcf1e3', '#f9e1c2', '#f6d3a6', '#f4c88f', '#f1ba73', '#eeab54', '#ea982e', '#E58100']
+
+const palette = whitebrownorange
 
 const interpolator = (name) =>  [
     'interpolate',
@@ -32,13 +34,7 @@ const interpolator = (name) =>  [
     palette[8],
 ]
 
-const interpolate = (variable) => interpolator(variable)
-
-const indiaMapInterpolator = (variable) => [
-    'case',
-    [">=", ["get", variable], 0], 'yellow',
-    'black'
-]
+const interpolate = interpolator
 
 const patternFill = (var1, var2, var1t, var2t, greater, lesser) => [
     'case',
@@ -71,5 +67,4 @@ const patternFill = (var1, var2, var1t, var2t, greater, lesser) => [
 export {
     interpolate,
     patternFill,
-    indiaMapInterpolator
 }
