@@ -1,4 +1,4 @@
-const dictionary = {
+const title_case_dictionary = {
     "Andaman and Nicobar": ["Andaman and Nicobar Islands"],
     "Orissa": ["Odisha"],
     "Uttaranchal": ["Uttarakhand"],
@@ -37,13 +37,22 @@ const dictionary = {
     "Kasganj": ["Kanshiram Nagar"],
     "North 24 Parganas": ["North Twenty Four Parganas"],
     "South 24 Parganas": ["South Twenty Four Parganas"]
-
 }
+
+const lowercase = (dict) => {
+    const result = {}
+    for (const key in dict) {
+        result[key.toLowerCase()] = dict[key].map(synonym => synonym.toLowerCase())
+    }
+    return result;
+}
+
+const dictionary = lowercase(title_case_dictionary)
 
 const keys = Object.keys(dictionary)
 
 const lookup = (word) => {
-    for (key in keys) {
+    for (const key in keys) {
         if (dictionary[key].includes(word)) return key
     }
 }

@@ -11,15 +11,15 @@ const fallbackGradient = 'per_capita_maize';
 // const gradientVariable = 'bmi_1849_lessthan185';
 
 // const gradientVariable = 'millets_of_ill';
-// const gradientVariable = 'per_capita_jowar';
-// const gradientVariable = 'per_capita_bajra';
-// const gradientVariable = 'per_capita_other_cereal_millet';
+// const gradientVariable = 'Jowar';
+const gradientVariable = 'bajra';
+// const gradientVariable = 'Other_cereals_and_millets';
 // const gradientVariable = 'per_capita_rice';
 // const gradientVariable = 'per_capita_wheat';
 
 // Choose the patterns to overlay by uncommenting the corresponding lines in patternVariables and patternThresholds
 
-const patternVariables = ['stunted_5', 'Wasted_5']
+const patternVariables = ['stunting_total', 'wasting_total']
 const patternThresholds = [45, 27]
 const patternComparators = ['>', '<=']
 
