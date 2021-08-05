@@ -3,7 +3,7 @@ import { interpolate, patternFill } from './styles.js'
 
 // Choose the gradient (base layer) by uncommenting the correct line
 
-const fallbackGradient = 'per_capita_maize';
+const fallbackGradient = 'Jowar';
 
 // const gradientVariable = 'per_capita_maize';
 // const gradientVariable = 'per_capita_total_cereals_millets';
@@ -12,16 +12,17 @@ const fallbackGradient = 'per_capita_maize';
 
 // const gradientVariable = 'millets_of_ill';
 // const gradientVariable = 'Jowar';
-const gradientVariable = 'bajra';
+// const gradientVariable = 'bajra';
 // const gradientVariable = 'Other_cereals_and_millets';
+// const gradientVariable = 'jowar_bajra_other';
 // const gradientVariable = 'per_capita_rice';
 // const gradientVariable = 'per_capita_wheat';
 
 // Choose the patterns to overlay by uncommenting the corresponding lines in patternVariables and patternThresholds
 
 const patternVariables = ['stunting_total', 'wasting_total']
-const patternThresholds = [45, 27]
-const patternComparators = ['>', '<=']
+const patternThresholds = [46, 28]
+const patternComparators = ['>=', '<']
 
 // const patternVariables = ['bmi_less', 'sort_ght']
 // const patternThresholds = [30, 15]
