@@ -128,8 +128,8 @@ const getRelevantDistrictData = (feature, localData) => {
                 district: featureDistrict?.toLowerCase(),
                 altDistrict: featureDistrictAlt?.toLowerCase() || featureDistrict?.toLowerCase(),
                 csvData: localData,
-                csvStateColumn: "State",
-                csvDistrictColumn: "District"
+                csvStateColumn: "state",
+                csvDistrictColumn: "district"
             })
             return districtData
         }
