@@ -1,6 +1,6 @@
 import { levenshtein } from './levenshtein.js'
 import { synonym } from './dictionary.js'
-import { blacklist } from './blacklist.js'
+import { blocklist } from './blocklist.js'
 
 
 const findDistrictRows = ({
@@ -84,13 +84,13 @@ const findDistrictDataInCSV = ({
         console.log(`Could not match ${district}`)
         matchType = defeat
     }
-    if (Object.keys(blacklist).includes(district)) {
+    if (Object.keys(blocklist).includes(district)) {
         matchType = excludedMatch
         districtRow = []
     }
     switch (matchType) {
         case excludedMatch:
-            console.warn(`${district} of ${state} excluded. (${blacklist[district]})`)
+            console.warn(`${district} of ${state} excluded. (${blocklist[district]})`)
             break;
         case synonymMatch:
             console.info(`${district} of ${state} matched through dictionary to ${districtRow[0].district} of ${districtRow[0].state}`)
