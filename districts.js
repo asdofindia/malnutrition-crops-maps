@@ -1,29 +1,46 @@
 import { levenshtein } from './levenshtein.js'
 import { synonym } from './dictionary.js'
 import { blocklist } from './blocklist.js'
+import config from "./config.js";
 
-
-const findDistrictRows = ({
+const findDistrictRowsInTable = ({
     district, altDistrict, data, districtColumn
 }) => {
-    let dataRow = data.filter(districtRow => districtRow[districtColumn] == district)
-    if (dataRow.length === 0) {
-        dataRow = data.filter(districtRow => districtRow[districtColumn] == altDistrict)
-    }
-    return dataRow
+    return filterExactMatchOrValues(data, districtColumn, district, altDistrict)
 }
 
+const filterExactMatchOrValues = (rows, columnToSearch, exactMatch, alternateValues) => {
+    const matchingRows = filterRowsWithValue(rows, columnToSearch, exactMatch)
+    if (matchingRows.length > 0) {
+        return matchingRows
+    }
+    return filterRowsWithValues(rows, columnToSearch, alternateValues)
+} 
+
+const filterRowsWithValue = (rows, columnToSearch, value) => {
+    return rows.filter(row => row[columnToSearch] == value)
+}
+
+const filterRowsWithValues = (rows, columnToSearch, successValues) => {
+    return rows.filter(row => {
+        const relevantValueInRow = row[columnToSearch]
+        return successValues.includes(relevantValueInRow)
+    })
+}
+
+
 const findDictionaryDistrict = ({
-    district, altDistrict, data, districtColumn
+    district, data, districtColumn
 }) => {
     const synonyms = synonym(district)
-    let dataRow = data.filter(districtRow => synonyms.includes(districtRow[districtColumn]))
-    return dataRow
+    return filterRowsWithValues(data, districtColumn, synonyms)
 }
 
 const findClosestMatchDistrict = ({
-    district, altDistrict, data, districtColumn
+    district, data, districtColumn
 }) => {
+    const WORST_CASE_CONSTANT = "WORST_CASE_DISTRICT_SPECIAL"
+    const WORST_CASE = {distance: 10, district: WORST_CASE_CONSTANT}
     const reducer = (bestDistrict, districtRow) => {
         const dataDistrict = districtRow[districtColumn]
         const distance = levenshtein(district, dataDistrict).steps
@@ -31,7 +48,8 @@ const findClosestMatchDistrict = ({
         if (distance < bestDistrict.distance) return districtRow
         return bestDistrict
     }
-    let dataRow = data.reduce(reducer, {distance: 10, district: null})
+    const dataRow = data.reduce(reducer, WORST_CASE)
+    if (dataRow.district === WORST_CASE_CONSTANT) return []
     return [dataRow]
 }
 
@@ -39,68 +57,56 @@ const findClosestMatchDistrict = ({
 const findDistrictDataInCSV = ({
     state, district, altDistrict, csvData, csvStateColumn, csvDistrictColumn
 }) => {
-    let sameStateRows = csvData.filter(districtRow => districtRow[csvStateColumn] == state)
+    const sameStateRows = filterExactMatchOrValues(csvData, csvStateColumn, state, synonym(state))
     if (sameStateRows.length === 0) {
-        const stateSynonyms = synonym(state)
-        sameStateRows = csvData.filter(districtRow => stateSynonyms.includes(districtRow[csvStateColumn]))
-        if (sameStateRows.length === 0) {
-            console.log(`State: ${state} has no entry in the csv. Kindly check`)
-            let districtRow = findDistrictRows({
+        if (config.debug) {
+            const districtRow = findDistrictRowsInTable({
                 district, altDistrict, data: csvData, districtColumn: csvDistrictColumn
             })
             console.log(`Found ${districtRow.length} districts for ${district} by searching without state filter`)
             return districtRow
         }
+        else {
+            throw `State: ${state} has no entry in the csv. Kindly check`
+        }
     }
-
-    let matchType = "direct"
-    let withoutStateFilter = "Without state filter"
-    let synonymMatch = "synonym"
-    let levenshtein = "levenshtein distance"
-    let defeat = "defeat"
-    let excludedMatch = "blacklist"
-    let districtRow = findDistrictRows({
-                district, altDistrict, data: sameStateRows, districtColumn: csvDistrictColumn
-    })
-    if (districtRow.length === 0) {
-        matchType = withoutStateFilter
-        districtRow = findDistrictRows({
-            district, altDistrict, data: csvData, districtColumn: csvDistrictColumn
-        })
-    }
-    if (districtRow.length === 0) {
-        matchType = synonymMatch
-        districtRow = findDictionaryDistrict({
-            district, altDistrict, data: csvData, districtColumn: csvDistrictColumn
-        })
-    }
-    if (districtRow.length === 0) {
-        matchType = levenshtein
-        districtRow = findClosestMatchDistrict({
-            district, altDistrict, data: csvData, districtColumn: csvDistrictColumn
-        })
-    }
-    if (districtRow[0].district == null) {
-        console.log(`Could not match ${district}`)
-        matchType = defeat
-    }
+    
     if (Object.keys(blocklist).includes(district)) {
-        matchType = excludedMatch
-        districtRow = []
+        console.warn(`${district} of ${state} excluded. (${blocklist[district]})`)
+        return []
     }
-    switch (matchType) {
-        case excludedMatch:
-            console.warn(`${district} of ${state} excluded. (${blocklist[district]})`)
-            break;
-        case synonymMatch:
-            console.info(`${district} of ${state} matched through dictionary to ${districtRow[0].district} of ${districtRow[0].state}`)
-            break;
-        case levenshtein:
-            console.warn(`${district} of ${state} matched through levenshtein to ${districtRow[0].district} of ${districtRow[0].state}`)
-            break;
+    const directlyMatchedDistricts = findDistrictRowsInTable({
+        district, altDistrict, data: sameStateRows, districtColumn: csvDistrictColumn
+    })
+    if (directlyMatchedDistricts.length > 0) {
+        return directlyMatchedDistricts
     }
 
-    return districtRow
+    const matchedWithoutStateFilter = findDistrictRowsInTable({
+        district, altDistrict, data: csvData, districtColumn: csvDistrictColumn
+    })
+    if (matchedWithoutStateFilter.length > 0) {
+        console.warn(`${district} of ${state} matched to a different state to ${matchedWithoutStateFilter[0].district} of ${matchedWithoutStateFilter[0].state}`)
+        return matchedWithoutStateFilter
+    }
+
+    const matchedThroughDictionary = findDictionaryDistrict({
+        district, altDistrict, data: csvData, districtColumn: csvDistrictColumn
+    })
+    if (matchedThroughDictionary.length > 0) {
+        console.info(`${district} of ${state} matched through dictionary to ${matchedThroughDictionary[0].district} of ${matchedThroughDictionary[0].state}`)
+        return matchedThroughDictionary
+    }
+
+    const matchedThroughSimilarity = findClosestMatchDistrict({
+        district, altDistrict, data: csvData, districtColumn: csvDistrictColumn
+    })
+    if (matchedThroughSimilarity.length > 0) {
+        console.info(`${district} of ${state} matched through levenshtein to ${matchedThroughSimilarity[0].district} of ${matchedThroughSimilarity[0].state}`)
+        return matchedThroughSimilarity
+    }
+    console.log(`Could not match ${district}`)
+
 }
 
 const findHighestAndLowestOf = (variable, data) => {
@@ -137,80 +143,7 @@ const getRelevantDistrictData = (feature, localData) => {
 
 const getGradientColor = (gradientValue) => `rgb(255, ${255 - (gradientValue * 0.5)}, ${255 - gradientValue})`
 
-const Map = ({data, gradientVariable, patternVariable}) => {
-    if (!gradientVariable) {
-        gradientVariable = "per_capita_maize"
-    }
-
-    if (!patternVariable) {
-        patternVariable = "stunted_5"
-    }
-
-    const [gradientRange, setGradientRange] = useState([0, 1])
-
-    const [localData, setLocalData] = useState([])
-    const position = [22.5, 83.5]
-    const zoom = 5
-    const preferCanvas = false
-
-    const getGradientStyle = (feature) => {
-        const districtData = getRelevantDistrictData(feature, localData)
-        const styles = {
-            fill: true,
-            fillOpacity: 0.8,
-            stroke: false,
-        }
-        if (districtData && districtData[0]) {
-            const gradientValue = getGradientLevel(districtData[0][gradientVariable], gradientRange)
-            styles.color = getGradientColor(gradientValue)
-            return styles
-        } else {
-            styles.color = `lightgrey`
-            return styles
-        }
-    }
-
-    const getPatternStyle = (feature) => {
-        const districtData = getRelevantDistrictData(feature, localData)
-        const styles = {
-            fill: true,
-            color: `#ffffffff`,
-            fillOpacity: 1,
-            stroke: false,
-        }
-        if (districtData && districtData[0]) {
-            const gradientValue = getGradientLevel(districtData[0][gradientVariable], gradientRange)
-            const patternValue = districtData[0][patternVariable]
-            // const pattern = getPattern(districtData[0][patternVariable])
-            styles.color = getGradientColor(gradientValue)
-            if (patternValue > 45) {
-                styles.fillPattern = Patterns.StripePattern({
-                    color: `black`,
-                    key: `stripe`,
-                    spaceColor: getGradientColor(gradientValue),
-                    spaceOpacity: 1,
-                    weight: 0.5,
-                    dashArray: "4, 4, 2",
-                    spaceWeight: 0.5,
-                    angle: 45,
-                    width: 25,
-                    height: 10,
-                })
-            }
-            return styles
-        } else {
-            return styles
-        }
-    }
-
-    const enhanceData = (csvData) => {
-        setGradientRange(findHighestAndLowestOf(gradientVariable, csvData))
-        setLocalData(csvData)
-    }
-}
-
 export {
     getGradientColor,
     getRelevantDistrictData
 }
-
