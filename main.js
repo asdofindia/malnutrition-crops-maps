@@ -3,7 +3,7 @@ import { interpolate, patternFill } from './styles.js'
 
 // Choose the gradient (base layer) by uncommenting the correct line
 
-const fallbackGradient = 'Jowar';
+const fallbackGradient = 'per_capita_jowar';
 
 // const gradientVariable = 'per_capita_maize';
 // const gradientVariable = 'per_capita_total_cereals_millets';
@@ -12,7 +12,11 @@ const fallbackGradient = 'Jowar';
 
 // const gradientVariable = 'millets_of_ill';
 // const gradientVariable = 'Jowar';
+const gradientVariable = 'per_capita_jowar';
 // const gradientVariable = 'bajra';
+// const gradientVariable = 'per_capita_bajra';
+// const gradientVariable = 'per_capita_other_cereal_millet';
+// const gradientVariable = 'per_capita_total_cereals_millets';
 // const gradientVariable = 'Other_cereals_and_millets';
 // const gradientVariable = 'jowar_bajra_other';
 // const gradientVariable = 'per_capita_rice';
@@ -51,40 +55,6 @@ const showCorrectLegend = () => {
 
 showCorrectLegend()
 
-const recalculate_variables = (data) => {
-    return data.map((district) => {
-        
-        const total_population = parseInt(district["total_population"]);
-        const poor_population = parseInt(district["total_poor_population"]);
-        const poor_percent = poor_population/total_population;
-        
-        const rice = parseInt(district["rice"]);
-        const jowar = parseInt(district["Jowar"]);
-        const bajra = parseInt(district["bajra"]);
-        const maize = parseInt(district["maize"]);
-        const ragi = parseInt(district["ragi"]);
-        const wheat = parseInt(district["wheat"]);
-        const others = parseInt(district["Other_cereals_and_millets"]);
-        const illMillets = others + bajra + jowar;
-        const total = parseInt(district["total_cereals_and_millets"]);
-
-        district["millets_of_ill"] = illMillets / poor_population;
-
-
-        district["per_capita_maize"] = (maize/total_population) * poor_population;
-        district["per_capita_jowar"] = (jowar/total_population) * poor_population;
-        district["per_capita_bajra"] = (bajra/total_population) * poor_population;
-        district["per_capita_rice"] = (rice/total_population) * poor_population;
-        district["per_capita_ragi"] = (ragi/total_population) * poor_population;
-        district["per_capita_wheat"] = (wheat/total_population) * poor_population;
-        district["per_capita_other_cereal_millet"] = (others/total_population) * poor_population;
-        district["millets_of_ill"] = (illMillets/total_population) * poor_population;
-        district["per_capita_total_cereals_millets"] = (total/total_population) * poor_population;
-
-        return district
-    })
-}
-
 const fetchData = () => new Promise((resolve, reject) => {
     Papa.parse('./data.csv', {
         header: true,
@@ -94,8 +64,6 @@ const fetchData = () => new Promise((resolve, reject) => {
         }
     })
 });
-
-const preProcessVariablesInData = (data) => recalculate_variables(data);
 
 const harmonizeStateNames = (data) => data.map(row => {
     if (row["state"] !== "telangana") {
@@ -249,7 +217,6 @@ const mapLoader = async (map, geojsonData) => {
 
 (async () => {
     let data = await fetchData();
-    data = preProcessVariablesInData(data);
     data = harmonizeStateNames(data)
 
     let geographies = await fetchGeo();
