@@ -36,7 +36,8 @@ const title_case_dictionary = {
     "Amroha" :["Jyotiba Phule Nagar"],
     "Kasganj": ["Kanshiram Nagar"],
     "North 24 Parganas": ["North Twenty Four Parganas"],
-    "South 24 Parganas": ["South Twenty Four Parganas"]
+    "South 24 Parganas": ["South Twenty Four Parganas"],
+    "Andaman Islands": ["North & Middle Andaman"]
 }
 
 const lowercase = (dict) => {

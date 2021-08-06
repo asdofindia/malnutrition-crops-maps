@@ -59,16 +59,7 @@ const findDistrictDataInCSV = ({
 }) => {
     const sameStateRows = filterExactMatchOrValues(csvData, csvStateColumn, state, synonym(state))
     if (sameStateRows.length === 0) {
-        if (config.debug) {
-            const districtRow = findDistrictRowsInTable({
-                district, altDistrict, data: csvData, districtColumn: csvDistrictColumn
-            })
-            console.log(`Found ${districtRow.length} districts for ${district} by searching without state filter`)
-            return districtRow
-        }
-        else {
-            throw `State: ${state} has no entry in the csv. Kindly check`
-        }
+        throw `State: ${state} has no entry in the csv. Kindly check`
     }
     
     if (Object.keys(blocklist).includes(district)) {
@@ -82,6 +73,22 @@ const findDistrictDataInCSV = ({
         return directlyMatchedDistricts
     }
 
+    const matchedThroughDictionary = findDictionaryDistrict({
+        district, altDistrict, data: sameStateRows, districtColumn: csvDistrictColumn
+    })
+    if (matchedThroughDictionary.length > 0) {
+        // console.info(`${district} of ${state} matched through dictionary to ${matchedThroughDictionary[0].district} of ${matchedThroughDictionary[0].state}`)
+        return matchedThroughDictionary
+    }
+
+    const matchedThroughSimilarity = findClosestMatchDistrict({
+        district, altDistrict, data: sameStateRows, districtColumn: csvDistrictColumn
+    })
+    if (matchedThroughSimilarity.length > 0) {
+        console.info(`${district} of ${state} matched through levenshtein to ${matchedThroughSimilarity[0].district} of ${matchedThroughSimilarity[0].state}`)
+        return matchedThroughSimilarity
+    }
+
     const matchedWithoutStateFilter = findDistrictRowsInTable({
         district, altDistrict, data: csvData, districtColumn: csvDistrictColumn
     })
@@ -90,21 +97,6 @@ const findDistrictDataInCSV = ({
         return matchedWithoutStateFilter
     }
 
-    const matchedThroughDictionary = findDictionaryDistrict({
-        district, altDistrict, data: csvData, districtColumn: csvDistrictColumn
-    })
-    if (matchedThroughDictionary.length > 0) {
-        console.info(`${district} of ${state} matched through dictionary to ${matchedThroughDictionary[0].district} of ${matchedThroughDictionary[0].state}`)
-        return matchedThroughDictionary
-    }
-
-    const matchedThroughSimilarity = findClosestMatchDistrict({
-        district, altDistrict, data: csvData, districtColumn: csvDistrictColumn
-    })
-    if (matchedThroughSimilarity.length > 0) {
-        console.info(`${district} of ${state} matched through levenshtein to ${matchedThroughSimilarity[0].district} of ${matchedThroughSimilarity[0].state}`)
-        return matchedThroughSimilarity
-    }
     console.log(`Could not match ${district}`)
 
 }
@@ -140,7 +132,7 @@ const getRelevantDistrictData = (feature, localData) => {
             return districtData
         }
 }
-
+ 
 const getGradientColor = (gradientValue) => `rgb(255, ${255 - (gradientValue * 0.5)}, ${255 - gradientValue})`
 
 export {

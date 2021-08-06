@@ -97,6 +97,15 @@ const fetchData = () => new Promise((resolve, reject) => {
 
 const preProcessVariablesInData = (data) => recalculate_variables(data);
 
+const harmonizeStateNames = (data) => data.map(row => {
+    if (row["state"] !== "telangana") {
+        return row
+    } else {
+        row["state"] = "andhra pradesh"
+        return row
+    }
+})
+
 const fetchGeo = () => {
     return fetch('./districts.geojson').then(async (response) => {
         return await response.json();
@@ -241,6 +250,7 @@ const mapLoader = async (map, geojsonData) => {
 (async () => {
     let data = await fetchData();
     data = preProcessVariablesInData(data);
+    data = harmonizeStateNames(data)
 
     let geographies = await fetchGeo();
 
