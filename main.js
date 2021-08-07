@@ -74,6 +74,22 @@ const harmonizeStateNames = (data) => data.map(row => {
     }
 })
 
+const recalculate_variables = (data) => data.map(district => {
+    const total_population = parseInt(district["total_population"], 10);
+    const poor_population = parseInt(district["total_poor_population"], 10);
+
+    const jowar = parseInt(district["Jowar_x"]);
+    const bajra = parseInt(district["bajra_x"]);
+    const others = parseInt(district["Other_cereals_and_millets_x"]);
+    const illMillets = others + bajra + jowar;
+
+    district["per_capita_jowar"] = (jowar/total_population) * poor_population;
+    district["per_capita_bajra"] = (bajra/total_population) * poor_population;
+    district["per_capita_other_cereal_millet"] = (others/total_population) * poor_population;
+    district["jowar_bajra_other"] = (illMillets/total_population) * poor_population;
+    return district
+})
+
 const fetchGeo = () => {
     return fetch('./districts.geojson').then(async (response) => {
         return await response.json();
@@ -217,6 +233,7 @@ const mapLoader = async (map, geojsonData) => {
 
 (async () => {
     let data = await fetchData();
+    data = recalculate_variables(data)
     data = harmonizeStateNames(data)
 
     let geographies = await fetchGeo();
