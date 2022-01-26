@@ -37,7 +37,9 @@ const title_case_dictionary = {
     "Kasganj": ["Kanshiram Nagar"],
     "North 24 Parganas": ["North Twenty Four Parganas"],
     "South 24 Parganas": ["South Twenty Four Parganas"],
-    "Andaman Islands": ["North & Middle Andaman"]
+    "Andaman Islands": ["North & Middle Andaman"],
+    "Balrampur": ["Surguja"],
+    "Chhota Udaipur": ["Vadodara"]
 }
 
 const lowercase = (dict) => {
@@ -48,7 +50,8 @@ const lowercase = (dict) => {
     return result;
 }
 
-const dictionary = lowercase(title_case_dictionary)
+const lower_case_dictionary = lowercase(title_case_dictionary)
+const dictionary = title_case_dictionary
 
 const keys = Object.keys(dictionary)
 

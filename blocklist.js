@@ -31,7 +31,12 @@ const blocklist = {
     "Hapur": "Formed in 2011",
     "Sambhal": "Formed in 2011",
     "Shamli": "Formed in 2011",
-    "Alipurduar": "Formed in 2014"
+    "Alipurduar": "Formed in 2014",
+    "Gilgit": "PoK",
+    "TKT": "PoK",
+    "Siachin": "PoK",
+    "AksaiChin": "CoK",
+    "AJK": "PoK"
 }
 
 export {
