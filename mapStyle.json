@@ -10,5 +10,6 @@
             "background-color": "rgba(0,0,0,0)"
           }
         }
-      ]
+      ],
+    "glyphs": "http://fonts.openmaptiles.org/{fontstack}/{range}.pbf"
 }

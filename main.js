@@ -116,6 +116,7 @@ const enhanceData = (geojsonData, csvData) => {
                 const floatPatternValue = parseFloat(stringPatternValue)
                 feature.properties[patternVariable] = floatPatternValue
             }
+            feature.properties["label"] = districtData[0]["label"]
         }
         return feature
     })
@@ -229,6 +230,26 @@ const mapLoader = async (map, geojsonData) => {
             'fill-opacity': 0.7
         }
     });
+    if (!gradientExists) {
+        map.addLayer({
+            'id': 'poi-labels',
+            'type': 'symbol',
+            'source': 'districts',
+            'paint': {
+                'text-color': 'white',
+                'text-halo-color': 'black',
+                'text-halo-width': 1
+            },
+            'layout': {
+                'text-field': ['get', 'label'],
+                'text-font': ['Open Sans Bold'],
+                'text-variable-anchor': ['top', 'bottom', 'left', 'right'],
+                'text-radial-offset': 0.5,
+                'text-justify': 'auto'
+            }
+        })
+    }
+    
 }
 
 (async () => {
