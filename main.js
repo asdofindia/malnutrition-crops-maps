@@ -11,16 +11,13 @@ const fallbackGradient = 'per_capita_jowar';
 // const gradientVariable = 'bmi_1849_lessthan185';
 
 // const gradientVariable = 'millets_of_ill';
-// const gradientVariable = 'Jowar';
-const gradientVariable = 'per_capita_jowar';
-// const gradientVariable = 'bajra';
+// const gradientVariable = 'per_capita_jowar';
 // const gradientVariable = 'per_capita_bajra';
 // const gradientVariable = 'per_capita_other_cereal_millet';
-// const gradientVariable = 'per_capita_total_cereals_millets';
-// const gradientVariable = 'Other_cereals_and_millets';
-// const gradientVariable = 'jowar_bajra_other';
+// const gradientVariable = 'per_capita_jowar_bajra_other';
 // const gradientVariable = 'per_capita_rice';
 // const gradientVariable = 'per_capita_wheat';
+// const gradientVariable = 'per_capita_jbo';
 
 // Choose the patterns to overlay by uncommenting the corresponding lines in patternVariables and patternThresholds
 
@@ -66,10 +63,10 @@ const fetchData = () => new Promise((resolve, reject) => {
 });
 
 const harmonizeStateNames = (data) => data.map(row => {
-    if (row["state"] !== "telangana") {
+    if (row["state"] !== "Telangana") {
         return row
     } else {
-        row["state"] = "andhra pradesh"
+        row["state"] = "Andhra Pradesh"
         return row
     }
 })
@@ -78,15 +75,26 @@ const recalculate_variables = (data) => data.map(district => {
     const total_population = parseInt(district["total_population"], 10);
     const poor_population = parseInt(district["total_poor_population"], 10);
 
-    const jowar = parseInt(district["Jowar_x"]);
-    const bajra = parseInt(district["bajra_x"]);
-    const others = parseInt(district["Other_cereals_and_millets_x"]);
+    const jowar = parseInt(district["jowar"]);
+    const bajra = parseInt(district["bajra"]);
+    const others = parseInt(district["other_millets"]);
     const illMillets = others + bajra + jowar;
+    const maize = parseInt(district["maize"]);
+    const rice = parseInt(district["rice"]);
+    const wheat = parseInt(district["wheat"]);
+    const ragi = parseInt(district["ragi"]);
+    const jbo = parseInt(district["jo_baj_othcer"]);
+
 
     district["per_capita_jowar"] = (jowar/total_population) * poor_population;
     district["per_capita_bajra"] = (bajra/total_population) * poor_population;
     district["per_capita_other_cereal_millet"] = (others/total_population) * poor_population;
-    district["jowar_bajra_other"] = (illMillets/total_population) * poor_population;
+    district["per_capita_jowar_bajra_other"] = (illMillets/total_population) * poor_population;
+    district["per_capita_maize"] = (maize/total_population) * poor_population;
+    district["per_capita_rice"] = (rice/total_population) * poor_population;
+    district["per_capita_wheat"] = (wheat/total_population) * poor_population;
+    district["per_capita_ragi"] = (ragi/total_population) * poor_population;
+    district["per_capita_jbo"] = (jbo/total_population) * poor_population;
     return district
 })
 
@@ -179,7 +187,7 @@ const mapLoader = async (map, geojsonData) => {
         [
             'case',
             ["==", ["get", fallbackGradient], null], '#ccc',
-            [">=", ["get", fallbackGradient], 0], '#eeab54',
+            [">=", ["get", fallbackGradient], 0], '#bbb', //'#eeab54',
             '#ccc'
         ]
 
@@ -255,7 +263,6 @@ const mapLoader = async (map, geojsonData) => {
 (async () => {
     let data = await fetchData();
     data = recalculate_variables(data)
-    data = harmonizeStateNames(data)
 
     let geographies = await fetchGeo();
 

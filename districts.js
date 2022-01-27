@@ -122,9 +122,9 @@ const getRelevantDistrictData = (feature, localData) => {
         const featureDistrictAlt = feature.properties["VARNAME_2"]
         if (localData.length != 0) {
             const districtData = findDistrictDataInCSV({
-                state: featureState?.toLowerCase(),
-                district: featureDistrict?.toLowerCase(),
-                altDistrict: featureDistrictAlt?.toLowerCase() || featureDistrict?.toLowerCase(),
+                state: featureState,
+                district: featureDistrict,
+                altDistrict: featureDistrictAlt || featureDistrict,
                 csvData: localData,
                 csvStateColumn: "state",
                 csvDistrictColumn: "district"
