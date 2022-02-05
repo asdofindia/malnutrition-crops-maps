@@ -12,8 +12,15 @@ Geographic Information on districts of India is present as a geojson file in dis
 
 
 ### Map credits:
+
+Initial version of this project used maps by the following people:
+
 * [Sajjad Anwar](https://github.com/geohacker/india/)
 * [Hamad Khawaja](https://github.com/hamadkh/GeoJson4Kashmir/)
+
+For revision 4 onwards, we used map by:
+
+* [Debarghya Das](https://github.com/deedy/india-nfhs4)
 
 ### Libraries used:
 * [Mapbox GL JS](https://docs.mapbox.com/mapbox-gl-js/) - for mapping
